@@ -1,13 +1,20 @@
+import { tools } from "@/app/lib/tools/allTools";
 import OpenAI from "openai";
 import { Assistant } from 'openai/resources/beta/assistants';
 
 
-export const createAssistant = async (client : OpenAI) : Promise<Assistant>=> {
+export const createAssistant = async (client: OpenAI): Promise<Assistant> => {
     return await client.beta.assistants.create({
-        name: 'fluid',
-        description: 'Fluid is a chatbot that uses the OpenAI API to generate responses to user queries.',
+        name: 'Fluid',
         model: 'gpt-4o-mini',
-        instructions : '',
-        tools : []
+        instructions: `
+            You are a powerful AI assistant that has the capabilities to perform
+            onchain actions.
+            You can use the following tools to interact with the wallet:
+            - get_balance : get the balance of the wallet
+             
+        `,
+        tools: Object.values(tools).map((x) => x.definition)
     })
 }
+

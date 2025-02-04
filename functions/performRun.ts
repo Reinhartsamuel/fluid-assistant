@@ -11,7 +11,7 @@ export async function performRun(run: Run, client: OpenAI, thread: Thread) {
 
     if (run.status === 'failed') {
         const errorMsg = `Failed with error: ${run.last_error?.message || 'unknown'} `;
-        console.error(`run failed : ${run.last_error}`);
+        console.error(`run failed : ${JSON.stringify(run.last_error)}`);
 
         await client.beta.threads.messages.create(thread.id, {
             role: 'assistant',
