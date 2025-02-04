@@ -4,16 +4,25 @@ import main from "@/functions/main";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
+import { Message } from "./types";
 
 
-interface Message {
-  role: string;
-  content: string;
-}
+
 export default function Home() {
   const [prompt, setPrompt] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
 
+  function handlePrompt () {
+    setMessages((prev) => ([
+      ...prev,
+      {
+        role: 'user',
+        content: prompt
+      }
+    ]))
+    main(prompt, setMessages);
+    setPrompt('')
+  }
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
@@ -36,15 +45,41 @@ export default function Home() {
           <li>Save and see your changes instantly.</li>
         </ol>
 
+        <div className="w-full max-w-sm">
+          <div className="flex flex-col gap-4">
+            {messages.map((message, index) => (
+              <div
+                key={index}
+                className="flex items-center gap-2"
+              >
+                <div className="h-8 w-8 rounded-full bg-black/[.05] dark:bg-white/[.06]">
+                  <Image
+                    src={message.role === 'user' ? 'https://avatar.iran.liara.run/public/boy?username=Ash' : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXFeKWfFSa3lWMFVU1cho8IM2jm6Leqg7SOQ&s'}
+                    alt="User icon"
+                    width={20}
+                    height={20}
+                    style={{objectFit: 'contain'}}
+                  />
+                </div>
+                <p>{message.content}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
         <div className="flex w-full max-w-sm items-center space-x-2">
           <Input
             type="text"
             placeholder="message"
             onChange={(e) => setPrompt(e.target.value)}
+            value={prompt}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') handlePrompt();
+            }}
           />
           <Button
             type="submit"
-            onClick={() => main(prompt)}
+            onClick={handlePrompt}
           >
             post
           </Button>

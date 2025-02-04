@@ -5,6 +5,7 @@ import { tools } from "./app/lib/tools/allTools";
 
 export async function handleRunToolCalls(run: Run, client: OpenAI, thread: Thread): Promise<Run> {
    const toolCalls = run.required_action?.submit_tool_outputs?.tool_calls;
+   console.log(toolCalls,'toolcalls')
    if (!toolCalls) return run;
    const toolOutputs = await Promise.all(
       toolCalls.map(async (toolCall) => {
@@ -12,7 +13,7 @@ export async function handleRunToolCalls(run: Run, client: OpenAI, thread: Threa
             const toolConfig = tools[toolCall.function?.name];
             if (!toolConfig) {
                console.error('tool not found');
-               return null
+               throw new Error('tool not found')
             }
             const args = JSON.parse(toolCall.function.arguments);
             const response = await toolConfig.handler(args);

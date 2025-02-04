@@ -6,7 +6,7 @@ export const getAddressTool: ToolConfig = {
         type: 'function',
         function: {
             name: 'get_address',
-            description: 'Get the address of the wallet',
+            description: 'Get the address of your wallet',
             parameters: {
                 type: 'object',
                 properties: {}, // No parameters needed
