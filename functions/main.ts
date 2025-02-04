@@ -6,7 +6,16 @@ import { performRun } from "./performRun";
 import { Message } from "@/app/types";
 
 
-export default async function main(message : string, setMessages?: React.Dispatch<React.SetStateAction<Message[]>>) {
+export default async function main({
+    message,
+    setMessages,
+    setLoading,
+} : {
+    message : string,
+    setMessages? : React.Dispatch<React.SetStateAction<Message[]>>,
+    setLoading? : React.Dispatch<React.SetStateAction<boolean>>
+}) {
+    if (setLoading) setLoading(true)
     const client = new OpenAI({
         apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
         dangerouslyAllowBrowser: true
@@ -31,5 +40,6 @@ export default async function main(message : string, setMessages?: React.Dispatc
             }
         ]))
     }
+    if (setLoading) setLoading(false);
     return result
 }

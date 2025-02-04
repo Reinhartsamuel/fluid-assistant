@@ -26,6 +26,7 @@ export const getBalanceTool: ToolConfig<GetBalanceArg> = {
         }
     },
     handler: async ({ wallet }) => {
+        console.log('running getBalance handler');
         const client = createViemClient();
         const balance = await client.getBalance({ address: wallet as `0x${string}` });
         return formatEther(balance) as string;

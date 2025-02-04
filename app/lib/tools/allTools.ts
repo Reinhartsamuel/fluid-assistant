@@ -22,7 +22,7 @@ export interface ToolConfig<T = any> {
 
 export const tools: Record<string, ToolConfig> = {
     // add more tools here
-    GET_BALANCE : getBalanceTool,
-    GET_ADDRESS: getAddressTool,
+    get_balance : getBalanceTool,
+    get_address: getAddressTool,
 
 }

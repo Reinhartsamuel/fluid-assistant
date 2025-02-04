@@ -5,14 +5,16 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Message } from "./types";
+import { Spinner } from "@/components/ui/spinner";
 
 
 
 export default function Home() {
   const [prompt, setPrompt] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  function handlePrompt () {
+  function handlePrompt() {
     setMessages((prev) => ([
       ...prev,
       {
@@ -20,32 +22,15 @@ export default function Home() {
         content: prompt
       }
     ]))
-    main(prompt, setMessages);
-    setPrompt('')
+    main({ message: prompt, setMessages, setLoading });
+    setPrompt('');
   }
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className="relative grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+      <main className="w-[40rem] flex flex-col gap-8 row-start-2 items-center sm:items-start">
+        <p className="text-xl italic underline font-bold">Start chat with Fluid</p>
 
-        <div className="w-full max-w-sm">
+        <div className="w-full">
           <div className="flex flex-col gap-4">
             {messages.map((message, index) => (
               <div
@@ -58,16 +43,17 @@ export default function Home() {
                     alt="User icon"
                     width={20}
                     height={20}
-                    style={{objectFit: 'contain'}}
+                    style={{ objectFit: 'cover' }}
                   />
                 </div>
                 <p>{message.content}</p>
               </div>
             ))}
+            {loading && <Spinner />}
           </div>
         </div>
 
-        <div className="flex w-full max-w-sm items-center space-x-2">
+        <div className="flex w-[40rem] items-center space-x-2 fixed bottom-10">
           <Input
             type="text"
             placeholder="message"
@@ -76,6 +62,7 @@ export default function Home() {
             onKeyDown={(e) => {
               if (e.key === 'Enter') handlePrompt();
             }}
+            className="bg-white"
           />
           <Button
             type="submit"
