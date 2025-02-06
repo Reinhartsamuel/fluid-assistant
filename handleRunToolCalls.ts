@@ -13,10 +13,10 @@ export async function handleRunToolCalls(run: Run, client: OpenAI, thread: Threa
             const toolConfig = tools[toolCall.function?.name];
             if (!toolConfig) {
                console.error('tool not found');
-               throw new Error('tool not found')
             }
             const args = JSON.parse(toolCall.function.arguments);
             const response = await toolConfig.handler(args);
+            console.log(response, 'this is response')
             return {
                tool_call_id: toolCall.id,
                output: String(response)
@@ -37,6 +37,7 @@ export async function handleRunToolCalls(run: Run, client: OpenAI, thread: Threa
    )
 
    const validOutputs = toolOutputs.filter(Boolean) as OpenAI.Beta.Threads.Runs.RunSubmitToolOutputsParams.ToolOutput[];
+   console.log(validOutputs, 'validoutputs')
    if (validOutputs?.length === 0) return run;
 
    return client.beta.threads.runs.submitToolOutputsAndPoll(

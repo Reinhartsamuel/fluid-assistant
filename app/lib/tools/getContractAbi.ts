@@ -1,4 +1,3 @@
-import { wallet } from "../viem/wallet";
 import { ToolConfig } from "./allTools";
 
 export const getContractAbi: ToolConfig = {

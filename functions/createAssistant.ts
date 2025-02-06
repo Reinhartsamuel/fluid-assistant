@@ -12,7 +12,7 @@ export const createAssistant = async (client: OpenAI): Promise<Assistant> => {
             onchain actions.
             You can use the following tools to interact with the wallet:
             - get_balance : get the balance of the wallet
-             
+            - get_wallet_address : get the wallet address
         `,
         tools: Object.values(tools).map((x) => x.definition)
     })

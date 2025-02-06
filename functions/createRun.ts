@@ -8,7 +8,7 @@ export async function createRun(client: OpenAI, thread: Thread, assistantId: str
         assistant_id: assistantId
     });
     while (run.status === 'in_progress' || run.status === 'queued') {
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise(resolve => setTimeout(resolve, 20));
         run = await client.beta.threads.runs.retrieve(thread.id, run.id);
     }
     return run;

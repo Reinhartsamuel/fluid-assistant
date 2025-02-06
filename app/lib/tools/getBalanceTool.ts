@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { formatEther } from "viem";
-import { createViemClient } from "../viem/client";
+import { createViemPublicClient } from "../viem/client";
 import { ToolConfig } from "./allTools";
 
 interface GetBalanceArg {
@@ -27,8 +27,8 @@ export const getBalanceTool: ToolConfig<GetBalanceArg> = {
     },
     handler: async ({ wallet }) => {
         console.log('running getBalance handler');
-        const client = createViemClient();
-        const balance = await client.getBalance({ address: wallet as `0x${string}` });
+        const client = createViemPublicClient();
+        const balance = await client.getBalance({ address: wallet as `0x${string}`});
         return formatEther(balance) as string;
     }
 }

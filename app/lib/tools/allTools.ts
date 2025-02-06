@@ -23,6 +23,6 @@ export interface ToolConfig<T = any> {
 export const tools: Record<string, ToolConfig> = {
     // add more tools here
     get_balance : getBalanceTool,
-    get_address: getAddressTool,
+    get_wallet_address: getAddressTool,
 
 }

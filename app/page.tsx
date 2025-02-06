@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Message } from "./types";
 import { Spinner } from "@/components/ui/spinner";
+import { createViemWalletClient } from "./lib/viem/wallet";
 
 
 
@@ -14,6 +15,12 @@ export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
 
+  function testAddress() {
+    const walletClient = createViemWalletClient();
+    if (walletClient) {
+        console.log( walletClient.account?.address)
+    } 
+  }
   function handlePrompt() {
     setMessages((prev) => ([
       ...prev,
@@ -120,6 +127,7 @@ export default function Home() {
           Go to nextjs.org →
         </a>
       </footer>
+      <Button onClick={testAddress}>test</Button>
     </div>
   );
 }
