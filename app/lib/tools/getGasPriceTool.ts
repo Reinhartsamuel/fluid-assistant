@@ -1,11 +1,12 @@
 import { ToolConfig } from "./allTools";
+import { createViemPublicClient } from "../viem/client";
 
-export const getContractAbi: ToolConfig = {
+export const getGasPriceTool: ToolConfig = {
     definition: {
         type: 'function',
         function: {
-            name: 'get_contract_abi',
-            description: 'Get the abi of a smart contract with provided contract address',
+            name: 'get_gas_price',
+            description: 'Get gas price for transaction',
             parameters: {
                 type: 'object',
                 properties: {}, // No parameters needed
@@ -15,6 +16,8 @@ export const getContractAbi: ToolConfig = {
     },
     handler: async () => {
         // Return the address of the wallet
-        return ''
+        const pubClient = createViemPublicClient();
+        const gasPrice = await pubClient.getGasPrice();
+        return gasPrice;
     }
 }

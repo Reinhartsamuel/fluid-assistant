@@ -1,5 +1,7 @@
 import { getAddressTool } from "./getAddressTool";
 import { getBalanceTool } from "./getBalanceTool";
+import { getGasPriceTool } from "./getGasPriceTool";
+import { sendTransactionTool } from "./sendTransactionTool";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export interface ToolConfig<T = any> {
@@ -24,5 +26,6 @@ export const tools: Record<string, ToolConfig> = {
     // add more tools here
     get_balance : getBalanceTool,
     get_wallet_address: getAddressTool,
-
+    send_transaction : sendTransactionTool,
+    get_gas_price : getGasPriceTool
 }

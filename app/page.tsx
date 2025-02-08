@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Message } from "./types";
 import { Spinner } from "@/components/ui/spinner";
 import { createViemWalletClient } from "./lib/viem/wallet";
+import { useAccount } from "wagmi";
 
 
 
@@ -15,6 +16,7 @@ export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
 
+  const account = useAccount()
   function testAddress() {
     const walletClient = createViemWalletClient();
     if (walletClient) {
@@ -69,7 +71,7 @@ export default function Home() {
             onKeyDown={(e) => {
               if (e.key === 'Enter') handlePrompt();
             }}
-            className="bg-white"
+            className="border-2 border-red-500"
           />
           <Button
             type="submit"
@@ -127,7 +129,7 @@ export default function Home() {
           Go to nextjs.org →
         </a>
       </footer>
-      <Button onClick={testAddress}>test</Button>
+      <Button onClick={testAddress}>Test Account</Button>
     </div>
   );
 }

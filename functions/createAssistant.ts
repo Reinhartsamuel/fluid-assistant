@@ -13,6 +13,8 @@ export const createAssistant = async (client: OpenAI): Promise<Assistant> => {
             You can use the following tools to interact with the wallet:
             - get_balance : get the balance of the wallet
             - get_wallet_address : get the wallet address
+            - send_transaction : send a transaction on EVM blockchain
+            - get_gas_price : get the current gas price for a transaction
         `,
         tools: Object.values(tools).map((x) => x.definition)
     })
