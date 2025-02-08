@@ -14,32 +14,33 @@ const client = new OpenAI({
     dangerouslyAllowBrowser: true
 });
 
-async function chat(thread: Thread, assistant: Assistant, message: string,
+export async function chat(thread: Thread, assistant: Assistant, message: string,
     setMessages?: React.Dispatch<React.SetStateAction<Message[]>>,
+    setLoading?: React.Dispatch<React.SetStateAction<boolean>>
 ): Promise<void> {
-    while (true) {
-        try {
-            await client.beta.threads.messages.create(thread.id, {
-                role: "user",
-                content: message
-            });
+    if (setLoading) setLoading(true)
+    try {
+        await client.beta.threads.messages.create(thread.id, {
+            role: "user",
+            content: message
+        });
 
-            const run = await createRun(client, thread, assistant.id);
-            const result = await performRun(run, client, thread);
+        const run = await createRun(client, thread, assistant.id);
+        const result = await performRun(run, client, thread);
 
-            if (setMessages) {
-                setMessages((prev) => ([
-                    ...prev,
-                    {
-                        role: 'assistant',
-                        content: result.text.value
-                    }
-                ]))
-            }
-        } catch (error) {
-            console.error('Error during chat:', error instanceof Error ? error.message : 'Unknown error');
+        if (setMessages) {
+            setMessages((prev) => ([
+                ...prev,
+                {
+                    role: 'assistant',
+                    content: result.text.value
+                }
+            ]))
         }
+    } catch (error) {
+        console.error('Error during chat:', error instanceof Error ? error.message : 'Unknown error');
     }
+    if (setLoading) setLoading(false);
 }
 
 export default async function main({
@@ -51,25 +52,24 @@ export default async function main({
     setMessages?: React.Dispatch<React.SetStateAction<Message[]>>,
     setLoading?: React.Dispatch<React.SetStateAction<boolean>>
 }) {
-    if (setLoading) setLoading(true)
 
     console.log('running...')
     const assistant = await createAssistant(client);
     console.log('assistant created')
 
-    const thread = await createThread(client, message);
+    const thread = await createThread(client);
     console.log('thread created')
-    const run = await createRun(client, thread, assistant.id);
-    console.log('run created')
-    const result = await performRun(run, client, thread)
-    console.log(result, ':::result')
+    // const run = await createRun(client, thread, assistant.id);
+    // console.log('run created')
+    // const result = await performRun(run, client, thread)
+    // console.log(result, ':::result')
 
     await chat(
         thread,
         assistant,
         message,
-        setMessages
+        setMessages,
+        setLoading
     )
-    if (setLoading) setLoading(false);
-    return result
+    // return result
 }

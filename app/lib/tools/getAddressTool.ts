@@ -1,5 +1,12 @@
-import { createViemWalletClient } from "../viem/wallet";
+import { createWalletClient, custom } from "viem";
 import { ToolConfig } from "./allTools";
+import { abstractTestnet } from "viem/chains";
+
+const windowClient = createWalletClient({
+  chain: abstractTestnet,
+  transport: custom(window.ethereum!)
+})
+
 
 export const getAddressTool: ToolConfig = {
     definition: {
@@ -15,14 +22,7 @@ export const getAddressTool: ToolConfig = {
         }
     },
     handler: async () => {
-        // Return the address of the wallet
-        const walletClient = createViemWalletClient();
-        if (walletClient) {
-            return walletClient.account?.address
-        } else {
-            return {
-                error: 'No wallet client found or error occured on get address method'
-            }
-        }
+        const [address] = await windowClient.getAddresses()
+        return address
     }
 }

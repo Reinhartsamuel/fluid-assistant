@@ -1,14 +1,34 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
-import Image from "next/image";
-import main from "@/functions/main";
+import { chat } from "@/functions/main";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Message } from "./types";
 import { Spinner } from "@/components/ui/spinner";
-import { createViemWalletClient } from "./lib/viem/wallet";
-import { useAccount } from "wagmi";
 
+
+import { Thread } from "openai/resources/beta/threads/threads.mjs";
+import { Assistant } from "openai/resources/beta/assistants.mjs";
+import { createAssistant } from "@/functions/createAssistant";
+import { createThread } from "@/functions/createThread";
+import OpenAI from "openai";
+
+
+const client = new OpenAI({
+  apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
+  dangerouslyAllowBrowser: true
+});
+
+
+
+import { createWalletClient, custom } from 'viem'
+import { mainnet } from 'viem/chains'
+
+const windowClient = createWalletClient({
+  chain: mainnet,
+  transport: custom(window.ethereum!)
+})
 
 
 export default function Home() {
@@ -16,14 +36,39 @@ export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const account = useAccount()
-  function testAddress() {
-    const walletClient = createViemWalletClient();
-    if (walletClient) {
-        console.log( walletClient.account?.address)
-    } 
+  const [assistant, setAssistant] = useState<Assistant | null>(null);
+  const [thread, setThread] = useState<Thread | null>(null);
+
+
+
+  const unitTest = async () => {
+    const [address] = await windowClient.getAddresses()
+    console.log(address, 'address')
   }
-  function handlePrompt() {
+  async function handlePromptChat() {
+    await chat(
+      thread!,
+      assistant!,
+      prompt,
+      setMessages,
+      setLoading
+    )
+  }
+
+  useEffect(() => {
+    async function init() {
+      const assistant = await createAssistant(client);
+      setAssistant(assistant);
+      console.log('assistant created')
+
+      const thread = await createThread(client);
+      setThread(thread)
+      console.log('thread created')
+    }
+    init();
+  }, [])
+
+  async function handlePrompt() {
     setMessages((prev) => ([
       ...prev,
       {
@@ -31,8 +76,8 @@ export default function Home() {
         content: prompt
       }
     ]))
-    main({ message: prompt, setMessages, setLoading });
     setPrompt('');
+    await handlePromptChat();
   }
   return (
     <div className="relative grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
@@ -46,16 +91,19 @@ export default function Home() {
                 key={index}
                 className="flex items-center gap-2"
               >
-                <div className="h-8 w-8 rounded-full bg-black/[.05] dark:bg-white/[.06]">
-                  <Image
+                <div className="">
+                  <img
                     src={message.role === 'user' ? 'https://avatar.iran.liara.run/public/boy?username=Ash' : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXFeKWfFSa3lWMFVU1cho8IM2jm6Leqg7SOQ&s'}
                     alt="User icon"
-                    width={20}
-                    height={20}
-                    style={{ objectFit: 'cover' }}
+                    // width={20}
+                    // height={20}
+                    // style={{ objectFit: 'cover' }}
+                    className="h-8 w-8 rounded-full bg-black/[.05] dark:bg-white/[.06] object-cover"
                   />
                 </div>
-                <p>{message.content}</p>
+                <div
+                  dangerouslySetInnerHTML={{ __html: message.content }}
+                />
               </div>
             ))}
             {loading && <Spinner />}
@@ -80,9 +128,13 @@ export default function Home() {
             post
           </Button>
         </div>
-
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
+
+
+      <Button onClick={unitTest}>
+      unitTest
+      </Button>
+      {/* <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
         <a
           className="flex items-center gap-2 hover:underline hover:underline-offset-4"
           href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
@@ -128,8 +180,7 @@ export default function Home() {
           />
           Go to nextjs.org →
         </a>
-      </footer>
-      <Button onClick={testAddress}>Test Account</Button>
+      </footer> */}
     </div>
   );
 }

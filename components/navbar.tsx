@@ -16,24 +16,10 @@ export function Navbar() {
                 <div className="container flex justify-center h-16 items-center">
                     <Link href="/" className="flex items-center space-x-2">
                         <Ticket className="h-6 w-6 text-primary" />
-                        <span className="text-lg font-bold">NFTix</span>
+                        <span className="text-lg font-bold">Fluid</span>
                     </Link>
                     <div className="flex flex-1 items-center justify-end space-x-4">
-                        <Link href="/create">
-                            <Button variant="ghost" size="sm">
-                                <Plus className="mr-2 h-4 w-4" /> Create Event
-                            </Button>
-                        </Link>
-                        <Link href="/verify">
-                            <Button variant="ghost" size="sm">
-                                Verify Ticket
-                            </Button>
-                        </Link>
-                        <Link href="/profile">
-                            <Button variant="ghost" size="sm">
-                                <User className="mr-2 h-4 w-4" /> Profile
-                            </Button>
-                        </Link>
+               
                         <TestButton />
                         <ConnectButton />
                     </div>
