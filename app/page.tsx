@@ -13,6 +13,7 @@ import { Assistant } from "openai/resources/beta/assistants.mjs";
 import { createAssistant } from "@/functions/createAssistant";
 import { createThread } from "@/functions/createThread";
 import OpenAI from "openai";
+import ReactMarkdown from 'react-markdown'
 
 
 const client = new OpenAI({
@@ -101,9 +102,9 @@ export default function Home() {
                     className="h-8 w-8 rounded-full bg-black/[.05] dark:bg-white/[.06] object-cover"
                   />
                 </div>
-                <div
-                  dangerouslySetInnerHTML={{ __html: message.content }}
-                />
+                <ReactMarkdown className={'break-words whitespace-pre-wrap'}>
+                  {message.content}
+                </ReactMarkdown>
               </div>
             ))}
             {loading && <Spinner />}
