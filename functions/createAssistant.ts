@@ -21,6 +21,7 @@ export const createAssistant = async (client: OpenAI): Promise<Assistant> => {
             onchain transactions, read transactions, etc. 
 
 
+
             You can use the following tools to interact with the wallet:
             - get_balance : get the balance of the wallet
             - get_wallet_address : get the wallet address
@@ -33,6 +34,8 @@ export const createAssistant = async (client: OpenAI): Promise<Assistant> => {
               what's the block hash, what's the block number, the date (format the date as "DD/MM/YYYY HH:mm"), 
               and value
 
+            If some tools that require account or wallet, prompt user to make sure that the wallet is connected 
+            by clicking connect button on the top right corner of the page.
         `,
         tools: Object.values(tools).map((x) => x.definition)
     })

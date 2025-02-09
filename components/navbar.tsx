@@ -16,11 +16,11 @@ export function Navbar() {
                 <div className="container flex justify-center h-16 items-center">
                     <Link href="/" className="flex items-center space-x-2">
                         <Ticket className="h-6 w-6 text-primary" />
-                        <span className="text-lg font-bold">Fluid</span>
+                        <span className="text-lg font-bold">Fluid Onchain Agent</span>
                     </Link>
                     <div className="flex flex-1 items-center justify-end space-x-4">
                
-                        <TestButton />
+                        {/* <TestButton /> */}
                         <ConnectButton />
                     </div>
                 </div>
@@ -33,8 +33,8 @@ export function Navbar() {
 
 
 
-const TestButton = () => {
-    const account = useAccount()
+// const TestButton = () => {
+//     const account = useAccount()
 
-    return <Button onClick={() => console.log(account)} variant='secondary'>Log</Button>
-}
+//     return <Button onClick={() => console.log(account)} variant='secondary'>Log</Button>
+// }
