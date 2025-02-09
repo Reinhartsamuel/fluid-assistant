@@ -83,7 +83,7 @@ export default function Home() {
             {messages.map((message, index) => (
               <div
                 key={index}
-                className="flex items-start gap-10"
+                className="flex items-start gap-2"
               >
                 <img
                   src={message.role === 'user' ? 'https://avatar.iran.liara.run/public/boy?username=Ash' : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXFeKWfFSa3lWMFVU1cho8IM2jm6Leqg7SOQ&s'}
@@ -113,34 +113,36 @@ export default function Home() {
             }}
             className="border-2 border-red-500"
           />
-          <Button
-            type="submit"
-            onClick={handlePrompt}
-          >
-            post
-          </Button>
+          {(thread === null || assistant === null) ? <Spinner /> :
+            <Button
+              type="submit"
+              onClick={handlePrompt}
+            >
+              post
+            </Button>
+          }
         </div>
       </main>
       <footer className="row-start-3 flex gap-6 mb-4 flex-wrap items-center justify-center">
         {templatePrompt.map((x, i) => (
-          <button key={i} 
-          onClick={async () => {
-            setPrompt(x);
-            setMessages((prev) => ([
-              ...prev,
-              {
-                role: 'user',
-                content: x
-              }
-            ]))
-            await chat(
-              thread!,
-              assistant!,
-              x,
-              setMessages,
-              setLoading
-            )
-          }}>
+          <button key={i}
+            onClick={async () => {
+              setPrompt(x);
+              setMessages((prev) => ([
+                ...prev,
+                {
+                  role: 'user',
+                  content: x
+                }
+              ]))
+              await chat(
+                thread!,
+                assistant!,
+                x,
+                setMessages,
+                setLoading
+              )
+            }}>
             {x}
           </button>
         ))}
