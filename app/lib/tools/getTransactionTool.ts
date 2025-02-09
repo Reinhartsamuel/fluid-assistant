@@ -6,14 +6,15 @@ interface GetTransactionArg {
     hash: `0x${string}`;
 }
 
-function stringifyBigInts(obj) {
+
+function stringifyBigInts<T extends Record<string, any>>(obj: T): T {
     // Check if the input is an object
     if (obj === null || typeof obj !== 'object') {
         return obj; // Return the value as is if it's not an object
     }
 
     // Create a new object to hold the converted values
-    const newObj = Array.isArray(obj) ? [] : {};
+    const newObj: Record<string, any> = Array.isArray(obj) ? [] : {};
 
     for (const key in obj) {
         if (obj.hasOwnProperty(key)) {
@@ -28,7 +29,7 @@ function stringifyBigInts(obj) {
         }
     }
 
-    return newObj;
+    return newObj as T;
 }
 export const getTransactionTool: ToolConfig<GetTransactionArg> = {
     definition: {
@@ -56,6 +57,6 @@ export const getTransactionTool: ToolConfig<GetTransactionArg> = {
         })
         const stringified = stringifyBigInts(transaction);
         console.log('stringifieddd',JSON.stringify(stringified))
-        return JSON.stringify(stringified) as string
+        return JSON.stringify(stringified) as string;
     }
 }

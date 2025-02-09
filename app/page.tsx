@@ -24,14 +24,8 @@ const client = new OpenAI({
 
 
 import { createWalletClient, custom, parseEther } from 'viem'
-import { abstractTestnet, mainnet } from 'viem/chains'
+import { abstractTestnet } from 'viem/chains'
 import { cn } from "@/lib/utils";
-
-const windowClient = createWalletClient({
-  chain: mainnet,
-  transport: custom(window.ethereum!)
-})
-
 
 export default function Home() {
   const [prompt, setPrompt] = useState('');

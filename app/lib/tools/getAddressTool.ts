@@ -1,3 +1,4 @@
+'use client'
 import { createWalletClient, custom } from "viem";
 import { ToolConfig } from "./allTools";
 import { abstractTestnet } from "viem/chains";

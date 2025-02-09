@@ -1,7 +1,7 @@
+'use client'
 import { Address, custom, createWalletClient, parseEther } from 'viem'
 import { ToolConfig } from './allTools.js';
 import { abstractTestnet } from 'viem/chains';
-import { createViemPublicClient } from '../viem/client.js';
 interface SendTransactionArgs {
     to: Address;
     value: string;

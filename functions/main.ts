@@ -7,6 +7,7 @@ import { performRun } from "./performRun";
 import { Message } from "@/app/types";
 import { Thread } from "openai/resources/beta/threads/threads.mjs";
 import { Assistant } from "openai/resources/beta/assistants.mjs";
+import { TextContentBlock } from "openai/resources/beta/threads/messages.mjs";
 
 
 const client = new OpenAI({
@@ -27,15 +28,20 @@ export async function chat(thread: Thread, assistant: Assistant, message: string
 
         const run = await createRun(client, thread, assistant.id);
         const result = await performRun(run, client, thread);
-
-        if (setMessages) {
-            setMessages((prev) => ([
-                ...prev,
-                {
-                    role: 'assistant',
-                    content: result.text.value
-                }
-            ]))
+         // Check if result is of type TextContentBlock
+         if ('text' in result) {
+            const textResult = result as TextContentBlock; // Type assertion
+            if (setMessages) {
+                setMessages((prev) => ([
+                    ...prev,
+                    {
+                        role: 'assistant',
+                        content: textResult.text.value // Now it's safe to access text.value
+                    }
+                ]));
+            }
+        } else {
+            console.warn('Result is not of type TextContentBlock:', result);
         }
     } catch (error) {
         console.error('Error during chat:', error instanceof Error ? error.message : 'Unknown error');

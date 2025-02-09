@@ -1,6 +1,6 @@
 "use client"
 
-import { Ticket, Plus, User } from "lucide-react"
+import { Ticket } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ConnectButton } from '@rainbow-me/rainbowkit';
