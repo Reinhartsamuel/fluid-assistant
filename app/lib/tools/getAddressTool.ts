@@ -3,10 +3,7 @@ import { createWalletClient, custom } from "viem";
 import { ToolConfig } from "./allTools";
 import { abstractTestnet } from "viem/chains";
 
-const windowClient = createWalletClient({
-  chain: abstractTestnet,
-  transport: custom(window.ethereum!)
-})
+
 
 
 export const getAddressTool: ToolConfig = {
@@ -23,6 +20,14 @@ export const getAddressTool: ToolConfig = {
         }
     },
     handler: async () => {
+        if (typeof window === 'undefined') {
+            console.error('Window is not defined. This function can only be run in the browser.');
+            return;
+        }
+        const windowClient = createWalletClient({
+            chain: abstractTestnet,
+            transport: custom(window.ethereum!)
+        })
         const [address] = await windowClient.getAddresses()
         return address
     }

@@ -33,7 +33,7 @@ export const sendTransactionTool: ToolConfig<SendTransactionArgs> = {
     },
     handler: async (args) => {
         const result = await sendTransaction(args);
-        if (!result.success || !result.hash) throw new Error(result.message);
+        if (!result?.success || !result.hash) throw new Error(result?.message);
         return result.hash;
     }
 };
@@ -44,6 +44,10 @@ async function sendTransaction({
 }: SendTransactionArgs) {
     try {
         let hash = '0x';
+        if (typeof window === 'undefined') {
+            console.error('Window is not defined. This function can only be run in the browser.');
+            return;
+        }
         const walletClient = createWalletClient({
             chain: abstractTestnet,
             transport: custom(window.ethereum!)

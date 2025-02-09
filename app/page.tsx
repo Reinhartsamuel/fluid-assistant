@@ -21,10 +21,6 @@ const client = new OpenAI({
   dangerouslyAllowBrowser: true
 });
 
-
-
-import { createWalletClient, custom, parseEther } from 'viem'
-import { abstractTestnet } from 'viem/chains'
 import { cn } from "@/lib/utils";
 
 export default function Home() {
@@ -36,34 +32,6 @@ export default function Home() {
   const [thread, setThread] = useState<Thread | null>(null);
 
 
-
-  const unitTest = async () => {
-    try {
-      let hash = '0x';
-      const walletClient = createWalletClient({
-        chain: abstractTestnet,
-        transport: custom(window.ethereum!)
-      })
-      const [address] = await walletClient.getAddresses()
-      hash = await walletClient.sendTransaction({
-        account: address,
-        to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-        value: parseEther('0.000152')
-      })
-
-      console.log({
-        success: true,
-        hash,
-        message: `Transaction sent successfully. Hash: ${hash}`
-      })
-    } catch (error) {
-      console.log({
-        success: false,
-        hash: null,
-        message: `Failed to send transaction: ${error instanceof Error ? error.message : 'Unknown error'}`
-      })
-    }
-  }
   async function handlePromptChat() {
     await chat(
       thread!,
@@ -146,11 +114,6 @@ export default function Home() {
           </Button>
         </div>
       </main>
-
-
-      <Button onClick={unitTest}>
-        unitTest
-      </Button>
       {/* <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
         <a
           className="flex items-center gap-2 hover:underline hover:underline-offset-4"
