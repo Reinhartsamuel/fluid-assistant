@@ -2,9 +2,7 @@
 
 import { Ticket } from "lucide-react"
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { useAccount } from 'wagmi';
 import WalletContextProvider from "@/app/providers/WalletProvider";
 
 
