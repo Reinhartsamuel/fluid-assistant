@@ -16,8 +16,8 @@ export const getGasPriceTool: ToolConfig = {
     },
     handler: async () => {
         // Return the address of the wallet
-        const pubClient = createViemPublicClient();
-        const gasPrice = await pubClient.getGasPrice();
+        const publicClient = createViemPublicClient();
+        const gasPrice = await publicClient.getGasPrice();
         return gasPrice;
     }
 }

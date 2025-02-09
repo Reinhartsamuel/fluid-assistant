@@ -24,7 +24,8 @@ export const createAssistant = async (client: OpenAI): Promise<Assistant> => {
             You can use the following tools to interact with the wallet:
             - get_balance : get the balance of the wallet
             - get_wallet_address : get the wallet address
-            - send_transaction : send a transaction on EVM blockchain
+            - send_transaction : send a transaction on EVM blockchain,
+               please note that the value is in ETH, not Wei and adjust accordingly.
             - get_gas_price : get the current gas price for a transaction
             - get_transaction : get details of a transaction on the blockchain without going to block explorer,
               explain to the user what the transaction is doing, what's the purpose of the transaction,

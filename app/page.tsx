@@ -23,8 +23,9 @@ const client = new OpenAI({
 
 
 
-import { createWalletClient, custom } from 'viem'
-import { mainnet } from 'viem/chains'
+import { createWalletClient, custom, parseEther } from 'viem'
+import { abstractTestnet, mainnet } from 'viem/chains'
+import { cn } from "@/lib/utils";
 
 const windowClient = createWalletClient({
   chain: mainnet,
@@ -43,8 +44,31 @@ export default function Home() {
 
 
   const unitTest = async () => {
-    const [address] = await windowClient.getAddresses()
-    console.log(address, 'address')
+    try {
+      let hash = '0x';
+      const walletClient = createWalletClient({
+        chain: abstractTestnet,
+        transport: custom(window.ethereum!)
+      })
+      const [address] = await walletClient.getAddresses()
+      hash = await walletClient.sendTransaction({
+        account: address,
+        to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
+        value: parseEther('0.000152')
+      })
+
+      console.log({
+        success: true,
+        hash,
+        message: `Transaction sent successfully. Hash: ${hash}`
+      })
+    } catch (error) {
+      console.log({
+        success: false,
+        hash: null,
+        message: `Failed to send transaction: ${error instanceof Error ? error.message : 'Unknown error'}`
+      })
+    }
   }
   async function handlePromptChat() {
     await chat(
@@ -86,23 +110,21 @@ export default function Home() {
         <p className="text-xl italic underline font-bold">Start chat with Fluid</p>
 
         <div className="w-full">
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-10">
             {messages.map((message, index) => (
               <div
                 key={index}
-                className="flex items-center gap-2"
+                className="flex items-start gap-10"
               >
-                <div className="">
-                  <img
-                    src={message.role === 'user' ? 'https://avatar.iran.liara.run/public/boy?username=Ash' : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXFeKWfFSa3lWMFVU1cho8IM2jm6Leqg7SOQ&s'}
-                    alt="User icon"
-                    // width={20}
-                    // height={20}
-                    // style={{ objectFit: 'cover' }}
-                    className="h-8 w-8 rounded-full bg-black/[.05] dark:bg-white/[.06] object-cover"
-                  />
-                </div>
-                <ReactMarkdown className={'break-words whitespace-pre-wrap'}>
+                <img
+                  src={message.role === 'user' ? 'https://avatar.iran.liara.run/public/boy?username=Ash' : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXFeKWfFSa3lWMFVU1cho8IM2jm6Leqg7SOQ&s'}
+                  alt="User icon"
+                  // width={20}
+                  // height={20}
+                  // style={{ objectFit: 'cover' }}
+                  className="h-8 w-8 rounded-full bg-black/[.05] dark:bg-white/[.06] object-cover"
+                />
+                <ReactMarkdown className={cn('break-words whitespace-pre-wrap', message.role === 'user' ? 'text-gray-400' : 'text-gray-100')}>
                   {message.content}
                 </ReactMarkdown>
               </div>
@@ -133,7 +155,7 @@ export default function Home() {
 
 
       <Button onClick={unitTest}>
-      unitTest
+        unitTest
       </Button>
       {/* <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
         <a

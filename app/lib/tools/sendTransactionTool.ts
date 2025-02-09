@@ -1,17 +1,10 @@
-import { Address, parseEther, AccessList } from 'viem'
+import { Address, custom, createWalletClient, parseEther } from 'viem'
 import { ToolConfig } from './allTools.js';
-import { createViemWalletClient } from '../viem/wallet.ts'
-
+import { abstractTestnet } from 'viem/chains';
+import { createViemPublicClient } from '../viem/client.js';
 interface SendTransactionArgs {
     to: Address;
-    value?: string;
-    data?: `0x${string}`;
-    nonce?: number;
-    gasPrice?: string;
-    accessList?: AccessList;
-    factoryDeps?: `0x${string}`[];
-    paymaster?: Address;
-    paymasterInput?: `0x${string}`;
+    value: string;
 }
 
 export const sendTransactionTool: ToolConfig<SendTransactionArgs> = {
@@ -30,71 +23,11 @@ export const sendTransactionTool: ToolConfig<SendTransactionArgs> = {
                     },
                     value: {
                         type: 'string',
-                        description: 'The amount of ETH to send (in ETH, not Wei)',
+                        description: 'The amount of ETH to send (in ETH, not Wei). If the user prompts using ETH, convert that to Wei.',
                         optional: true,
                     },
-                    data: {
-                        type: 'string',
-                        pattern: '^0x[a-fA-F0-9]*$',
-                        description: 'Contract interaction data',
-                        optional: true,
-                    },
-                    nonce: {
-                        type: 'number',
-                        description: 'Unique number identifying this transaction',
-                        optional: true,
-                    },
-                    gasPrice: {
-                        type: 'string',
-                        description: 'Gas price in Gwei',
-                        optional: true,
-                    },
-                    accessList: {
-                        type: 'array',
-                        description: 'EIP-2930 access list',
-                        items: {
-                            type: 'object',
-                            properties: {
-                                address: {
-                                    type: 'string',
-                                    description: 'The address of the account or contract to access'
-                                },
-                                storageKeys: {
-                                    type: 'array',
-                                    items: {
-                                        type: 'string',
-                                        description: 'The storage keys to access'
-                                    }
-                                }
-                            },
-                            required: ['address', 'storageKeys']
-                        },
-                        optional: true,
-                    },
-                    factoryDeps: {
-                        type: 'array',
-                        description: 'Factory dependencies (bytecodes of smart contracts)',
-                        items: {
-                            type: 'string',
-                            pattern: '^0x[a-fA-F0-9]*$',
-                            description: 'Contract bytecode as hex string'
-                        },
-                        optional: true,
-                    },
-                    paymaster: {
-                        type: 'string',
-                        pattern: '^0x[a-fA-F0-9]{40}$',
-                        description: 'Paymaster address',
-                        optional: true,
-                    },
-                    paymasterInput: {
-                        type: 'string',
-                        pattern: '^0x[a-fA-F0-9]*$',
-                        description: 'Paymaster input',
-                        optional: true,
-                    }
                 },
-                required: ['to']
+                required: ['to', 'value']
             }
         }
     },
@@ -108,29 +41,18 @@ export const sendTransactionTool: ToolConfig<SendTransactionArgs> = {
 async function sendTransaction({
     to,
     value,
-    data,
-    nonce,
-    gasPrice,
-    accessList,
-    factoryDeps,
-    paymaster,
-    paymasterInput
 }: SendTransactionArgs) {
     try {
-        const walletClient = createViemWalletClient();
-
-        const hash = await walletClient.sendTransaction({
-            to,
-            value: value ? parseEther(value) : undefined,
-            data,
-            nonce: nonce || undefined,
-            gasPrice: gasPrice ? parseEther(gasPrice) : undefined,
-            accessList: accessList || undefined,
-            customData: {
-                factoryDeps: factoryDeps || undefined,
-                paymaster: paymaster || undefined,
-                paymasterInput: paymasterInput || undefined
-            }
+        let hash = '0x';
+        const walletClient = createWalletClient({
+            chain: abstractTestnet,
+            transport: custom(window.ethereum!)
+        })
+        const [address] = await walletClient.getAddresses()
+        hash = await walletClient.sendTransaction({
+            account: address,
+            to: to,
+            value: parseEther(value)
         })
 
         return {
